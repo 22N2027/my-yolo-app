@@ -13,7 +13,6 @@ st.title("物体検出アプリケーション")
 st.sidebar.header("モデル設定")
 
 # モデルの選択肢を作成
-# 'concrete.pt' がフォルダにない場合は選択肢から外す処理を入れています
 model_options = ["yolov8n.pt"]  # デフォルトモデル
 if os.path.exists("concrete.pt"):
     model_options.append("concrete.pt")  # 自作モデルがあれば追加
@@ -22,7 +21,7 @@ elif os.path.exists("last.pt"):
 
 selected_model = st.sidebar.selectbox("使用するモデルを選択", model_options)
 
-# 信頼度のしきい値（スライダーで調整できるようにすると便利です）
+# 信頼度のしきい値
 conf_threshold = st.sidebar.slider("信頼度しきい値 (Confidence)", 0.0, 1.0, 0.25, 0.05)
 
 # --- モデルのロード関数 ---
@@ -64,7 +63,7 @@ if uploaded_file is not None:
         st.header("検出後の画像")
         st.image(annotated_image, channels="BGR", use_column_width=True)
         
-        # （オプション）検出された物体の数やクラス名を表示する
+        # 検出された物体の数やクラス名を表示する
         boxes = results[0].boxes
         if boxes:
             st.info(f"検出数: {len(boxes)} 個")
@@ -72,4 +71,5 @@ if uploaded_file is not None:
             class_names = [model.names[int(cls)] for cls in boxes.cls]
             st.write("検出されたクラス:", set(class_names)) # setで重複削除
         else:
+
             st.warning("物体は検出されませんでした。")
